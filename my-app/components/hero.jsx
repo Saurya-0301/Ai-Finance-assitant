@@ -7,7 +7,7 @@ import { Button } from "./ui/button";
 const HeroSection = () => {
   return (
     <section className="pb-20 px-4 text-center max-w-3xl mx-auto">
-      <h1 className="text-4xl font-bold mb-6 leading-tight">
+      <h1 className="text-4xl md:text-8x1 lg:text-[105px] pb-6 gradient-title font-bold mb-6 leading-tight">
         Your AI Copilot for Smarter Investments <br />
         Risk Insights, and Financial Growth
       </h1>
