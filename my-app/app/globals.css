@@ -120,3 +120,26 @@
     @apply bg-background text-foreground;
   }
 }
+@layer utilities {
+  .gradient {
+    @apply bg-gradient-to-br from-blue-600 to-purple-600;
+  }
+
+  .gradient-title {
+    @apply bg-gradient-to-br from-blue-600 to-purple-600 bg-clip-text text-transparent font-extrabold tracking-tighter pr-2 pb-2;
+  }
+}
+
+.hero-image-wrapper {
+  perspective: 500px;
+}
+
+.hero-image {
+  transform:  rotateX(15deg) scale(1);
+  transition: transform 0.5s ease-out;
+  will-change: transform;
+}
+
+.hero-image.scrolled {
+  transform: rotateX(0deg) scale(1) translateY(40px);
+}

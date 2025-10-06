@@ -3,11 +3,34 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import { useEffect, useRef } from "react";
 
 const HeroSection = () => {
+
+  const imageRef =useRef();
+  
+  useEffect(() => {
+    const imageElement = imageRef.current;
+
+    const handleScroll=()=>{
+       const scrollPosition = window.scrollY;
+       const scrollThreshold = 100;
+
+       if(scrollPosition>scrollThreshold){
+          imageElement.classList.add("scrolled");
+
+       }else{
+        imageElement.classList.remove("scrolled");
+       }
+    };
+
+    window.addEventListener("scroll",handleScroll)
+
+    return()=>window.removeEventListener("scroll",handleScroll)
+  }, []);
   return (
     <section className="pb-20 px-4 text-center max-w-3xl mx-auto">
-      <h1 className="text-4xl md:text-8x1 lg:text-[105px] pb-6 gradient-title font-bold mb-6 leading-tight">
+      <h1 className="text-5xl md:text-8x1 lg:text-[50px] pb-6 gradient-title font-bold mb-6 leading-tight">
         Your AI Copilot for Smarter Investments <br />
         Risk Insights, and Financial Growth
       </h1>
@@ -35,7 +58,8 @@ const HeroSection = () => {
       </div>
 
       {/* Banner Image */}
-      <div className="flex justify-center">
+      <div className="hero-image-wrapper">
+      <div ref={imageRef} className="hero-image">
         <Image
           src="/banner.png"
           width={1280}
@@ -44,6 +68,7 @@ const HeroSection = () => {
           className="rounded-lg shadow-2xl border"
           priority
         />
+      </div>
       </div>
     </section>
   );
