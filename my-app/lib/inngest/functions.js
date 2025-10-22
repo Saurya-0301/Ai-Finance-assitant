@@ -1,5 +1,5 @@
+import { db } from "../prisma";
 import { inngest } from "./client";
-import { db } from "@/lib/db"; // adjust path to your db client
 
 export const checkBudgetAlert = inngest.createFunction(
   { name: "check budget alert" },
@@ -23,6 +23,7 @@ export const checkBudgetAlert = inngest.createFunction(
       const defaultAccount = budget.user.accounts[0];
       if (!defaultAccount) continue;
 
+      // ✅ fix: wrap dynamic key in backticks & quotes
       await step.run(`check-budget-${budget.id}`, async () => {
         const startDate = new Date();
         startDate.setDate(1); // first day of current month
@@ -41,17 +42,18 @@ export const checkBudgetAlert = inngest.createFunction(
         const budgetAmount = budget.amount;
         const percentageUsed = (totalExpenses / budgetAmount) * 100;
 
+        // ✅ send alert if 80%+ of budget is used
         if (
           percentageUsed >= 80 &&
           (!budget.lastAlertSent ||
             isNewMonth(new Date(budget.lastAlertSent), new Date()))
         ) {
-          // send email logic here
+          // TODO: Replace with your real email/notification logic
           console.log(
-            `Budget alert for user ${budget.userId}, budget ${budget.id}`
+            `🚨 Budget alert for user ${budget.userId}, budget ${budget.id} – ${percentageUsed.toFixed(1)}% used`
           );
 
-          // update last alert sent
+          // ✅ update lastAlertSent timestamp
           await db.budget.update({
             where: { id: budget.id },
             data: { lastAlertSent: new Date() },
@@ -62,6 +64,7 @@ export const checkBudgetAlert = inngest.createFunction(
   }
 );
 
+// ✅ helper function to check if a new month has started
 function isNewMonth(lastAlertDate, currentDate) {
   return (
     lastAlertDate.getMonth() !== currentDate.getMonth() ||
