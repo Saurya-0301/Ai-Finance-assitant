@@ -1,0 +1,176 @@
+import * as React from "react";
+import { Html, Body, Container, Heading, Section, Text, Preview } from "@react-email/components";
+
+export default function EmailTemplate({
+  userName = "",
+  type = "monthly-report",
+  data = {
+    
+  },
+}) {
+  if (type === "monthly-report") {
+   return (
+      <Html>
+        <Head />
+        <Preview>Your Monthly Financial Report</Preview>
+        <Body style={styles.body}>
+          <Container style={styles.container}>
+            <Heading style={styles.title}>Monthly Financial Report</Heading>
+
+            <Text style={styles.text}>Hello {userName},</Text>
+            <Text style={styles.text}>
+              Here&rsquo;s your financial summary for {data?.month}:
+            </Text>
+
+            {/* Main Stats */}
+            <Section style={styles.statsContainer}>
+              <div style={styles.stat}>
+                <Text style={styles.text}>Total Income</Text>
+                <Text style={styles.heading}>${data?.stats.totalIncome}</Text>
+              </div>
+              <div style={styles.stat}>
+                <Text style={styles.text}>Total Expenses</Text>
+                <Text style={styles.heading}>${data?.stats.totalExpenses}</Text>
+              </div>
+              <div style={styles.stat}>
+                <Text style={styles.text}>Net</Text>
+                <Text style={styles.heading}>
+                  ${data?.stats.totalIncome - data?.stats.totalExpenses}
+                </Text>
+              </div>
+            </Section>
+
+            {/* Category Breakdown */}
+            {data?.stats?.byCategory && (
+              <Section style={styles.section}>
+                <Heading style={styles.heading}>Expenses by Category</Heading>
+                {Object.entries(data?.stats.byCategory).map(
+                  ([category, amount]) => (
+                    <div key={category} style={styles.row}>
+                      <Text style={styles.text}>{category}</Text>
+                      <Text style={styles.text}>${amount}</Text>
+                    </div>
+                  )
+                )}
+              </Section>
+            )}
+
+            {/* AI Insights */}
+            {data?.insights && (
+              <Section style={styles.section}>
+                <Heading style={styles.heading}>Welth Insights</Heading>
+                {data.insights.map((insight, index) => (
+                  <Text key={index} style={styles.text}>
+                    • {insight}
+                  </Text>
+                ))}
+              </Section>
+            )}
+
+           
+          </Container>
+        </Body>
+      </Html>
+    );
+  }
+
+  if (type === "budget-alert") {
+    return (
+      <Html>
+        <Preview>Budget Alert</Preview>
+        <Body style={styles.body}>
+          <Container style={styles.container}>
+            <Heading style={styles.title}>Budget Alert</Heading>
+            <Text style={styles.text}>Hello {userName},</Text>
+            <Text style={styles.text}>
+              You’ve used {data?.percentageUsed?.toFixed(1)}% of your monthly budget.
+            </Text>
+
+            <Section style={styles.statsContainer}>
+              <div style={styles.stat}>
+                <Text style={styles.text}>Budget Amount</Text>
+                <Text style={styles.heading}>${data?.budgetAmount}</Text>
+              </div>
+
+              <div style={styles.stat}>
+                <Text style={styles.text}>Spent so far</Text>
+                <Text style={styles.heading}>${data?.totalExpenses}</Text>
+              </div>
+
+              <div style={styles.stat}>
+                <Text style={styles.text}>Remaining</Text>
+                <Text style={styles.heading}>
+                  ${data?.budgetAmount - data?.totalExpenses}
+                </Text>
+              </div>
+            </Section>
+          </Container>
+        </Body>
+      </Html>
+    );
+  }
+
+  return null;
+}
+
+const styles = {
+  body: {
+    backgroundColor: "#f6f9fc",
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    margin: 0,
+    padding: "20px 0",
+  },
+  container: {
+    backgroundColor: "#ffffff",
+    margin: "0 auto",
+    padding: "20px",
+    borderRadius: "5px",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    maxWidth: "480px",
+  },
+  title: {
+    color: "#1f2937",
+    fontSize: "32px",
+    fontWeight: "600",
+    textAlign: "center",
+    margin: "0 0 20px",
+  },
+  heading: {
+    color: "#1f2937",
+    fontSize: "20px",
+    fontWeight: "600",
+    margin: "0 0 8px",
+  },
+  text: {
+    color: "#374151",
+    fontSize: "16px",
+    margin: "0 0 16px",
+  },
+  statsContainer: {
+    margin: "32px 0",
+    padding: "20px",
+    backgroundColor: "#f9fafb",
+    borderRadius: "5px",
+  },
+  stat: {
+    marginBottom: "16px",
+    padding: "12px",
+    backgroundColor: "#fff",
+    borderRadius: "5px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  },
+  section: {
+    marginTop: "32px",
+    padding: "20px",
+    backgroundColor: "#f9fafb",
+    borderRadius: "5px",
+    border: "1px solid #e5e7eb",
+  },
+  row: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "12px 0",
+    borderBottom: "1px solid #e5e7eb",
+  },
+  
+};
