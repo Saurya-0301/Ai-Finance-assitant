@@ -12,7 +12,7 @@ export const transactionSchema = z.object({
   type: z.enum(["INCOME", "EXPENSE"]),
   amount: z.string().min(1, "Amount is required"),
   description: z.string().optional(),
-  date: z.string().min(1, "Date is required"),
+  date: z.date(),
   accountId: z.string().min(1, "Account is required"),
   category:z.string().optional(),
   isRecurring: z.boolean().optional().default(false),

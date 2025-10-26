@@ -1,14 +1,17 @@
 import React from 'react'
-import { getUserAccounts } from '@/lib/user-accounts';
-import { defaultCategories } from '@/lib/constants/categories';
-import AddTransactionForm from '@/app/_components/transaction-form';
+
+
 import { getTransaction } from "@/actions/transaction";
+import { AddTransactionForm}  from './_components/transaction-form';
+import { defaultCategories } from '@/data/categories';
+import { getUserAccounts } from '@/actions/dashboard';
 
 
 const AddTransactionPage = async ({searchParams}) => {
     const accounts=await getUserAccounts();
 
-    const editId=searchParams.edit;
+  const params = await searchParams;
+  const editId = params.edit;
 
     console.log(editId);
 

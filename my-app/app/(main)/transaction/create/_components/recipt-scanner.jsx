@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import useFetch from "@/hooks/use-fetch";
 import { scanReceipt } from "@/actions/transaction";
 
-const ReciptScanner=({ onScanComplete}) =>{
+const ReceiptScanner=({ onScanComplete}) =>{
     const fileInputRef=useRef();
 
     const{
@@ -62,4 +62,4 @@ const ReciptScanner=({ onScanComplete}) =>{
     );
 };
 
-export default ReciptScanner;
+export default ReceiptScanner;
