@@ -2,7 +2,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "./ui/button"
-import { LayoutDashboard, PenBox } from "lucide-react"
+import { LayoutDashboard, LineChart, PenBox } from "lucide-react"
 import { checkUser } from "@/lib/checkUser"
 
 const Header = async () => {
@@ -34,7 +34,11 @@ const Header = async () => {
           <span className="hidden md:inline">Add transaction</span>
         </Button>
         </Link>
+        
+          
       </SignedIn>
+
+       
     
     <SignedOut>
       <SignInButton forceRedirectUrl="/dashboard">

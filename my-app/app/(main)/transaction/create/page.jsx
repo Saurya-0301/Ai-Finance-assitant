@@ -21,7 +21,7 @@ const AddTransactionPage = async ({searchParams}) => {
         initialData=transaction;
     }
     return <div className="max-w-3xl mx-auto px-5">
-        <h1 className="text-5xl gradient-tittle mb-8"> {editId? "Edit":"Add"} Transaction</h1>
+        <h1 className="text-5xl font-weight: bold  gradient-title mb-8"> {editId? "Edit":"Add"} Transaction</h1>
 
         <AddTransactionForm 
         accounts={accounts}

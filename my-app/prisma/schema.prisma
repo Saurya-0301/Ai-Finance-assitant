@@ -78,6 +78,29 @@ model Budget {
   @@map("budgets")
 }
 
+model Stock {
+  id        String       @id @default(uuid())
+  symbol    String
+  name      String?
+  exchange  String?
+  portfolios Portfolio[]
+}
+
+model Portfolio {
+  id        String   @id @default(uuid())
+  userId    String
+  stockId   String
+  quantity  Float
+  buyPrice  Float?
+  stock     Stock    @relation(fields: [stockId], references: [id])
+}
+
+model Watchlist {
+  id        String   @id @default(uuid())
+  userId    String
+  symbol    String
+}
+
 enum TransactionType {
   INCOME
   EXPENSE

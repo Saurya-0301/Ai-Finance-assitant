@@ -45,11 +45,30 @@ const PREVIEW_DATA = {
 };
 
 export default function EmailTemplate({
-  userName = "",
+  userName = "User",
   type = "monthly-report",
   data = {},
 }) {
+  // ✅ Safe fallback structure to prevent SSR crashes
+  const safeData = {
+    month: data.month ?? "N/A",
+    stats: {
+      totalIncome: data?.stats?.totalIncome ?? 0,
+      totalExpenses: data?.stats?.totalExpenses ?? 0,
+      byCategory: data?.stats?.byCategory ?? {},
+    },
+    insights: data?.insights ?? [],
+    percentageUsed: data?.percentageUsed ?? 0,
+    budgetAmount: data?.budgetAmount ?? 0,
+    totalExpenses: data?.totalExpenses ?? 0,
+  };
+
+  // ===============================
+  // Monthly Report Template
+  // ===============================
   if (type === "monthly-report") {
+    const net = safeData.stats.totalIncome - safeData.stats.totalExpenses;
+
     return (
       <Html>
         <Preview>Your Monthly Financial Report</Preview>
@@ -59,32 +78,30 @@ export default function EmailTemplate({
 
             <Text style={styles.text}>Hello {userName},</Text>
             <Text style={styles.text}>
-              Here’s your financial summary for {data?.month}:
+              Here’s your financial summary for {safeData.month}:
             </Text>
 
             {/* Main Stats */}
             <Section style={styles.statsContainer}>
               <div style={styles.stat}>
                 <Text style={styles.text}>Total Income</Text>
-                <Text style={styles.heading}>${data?.stats.totalIncome}</Text>
+                <Text style={styles.heading}>${safeData.stats.totalIncome}</Text>
               </div>
               <div style={styles.stat}>
                 <Text style={styles.text}>Total Expenses</Text>
-                <Text style={styles.heading}>${data?.stats.totalExpenses}</Text>
+                <Text style={styles.heading}>${safeData.stats.totalExpenses}</Text>
               </div>
               <div style={styles.stat}>
                 <Text style={styles.text}>Net</Text>
-                <Text style={styles.heading}>
-                  ${data?.stats.totalIncome - data?.stats.totalExpenses}
-                </Text>
+                <Text style={styles.heading}>${net}</Text>
               </div>
             </Section>
 
             {/* Category Breakdown */}
-            {data?.stats?.byCategory && (
+            {Object.keys(safeData.stats.byCategory).length > 0 && (
               <Section style={styles.section}>
                 <Heading style={styles.heading}>Expenses by Category</Heading>
-                {Object.entries(data?.stats.byCategory).map(
+                {Object.entries(safeData.stats.byCategory).map(
                   ([category, amount]) => (
                     <div key={category} style={styles.row}>
                       <Text style={styles.text}>{category}</Text>
@@ -96,10 +113,10 @@ export default function EmailTemplate({
             )}
 
             {/* AI Insights */}
-            {data?.insights && (
+            {safeData.insights.length > 0 && (
               <Section style={styles.section}>
                 <Heading style={styles.heading}>Wealth Insights</Heading>
-                {data.insights.map((insight, index) => (
+                {safeData.insights.map((insight, index) => (
                   <Text key={index} style={styles.text}>
                     • {insight}
                   </Text>
@@ -117,7 +134,15 @@ export default function EmailTemplate({
     );
   }
 
+  // ===============================
+  // Budget Alert Template
+  // ===============================
   if (type === "budget-alert") {
+    const remaining =
+      safeData.budgetAmount - safeData.totalExpenses > 0
+        ? safeData.budgetAmount - safeData.totalExpenses
+        : 0;
+
     return (
       <Html>
         <Preview>Budget Alert</Preview>
@@ -126,31 +151,37 @@ export default function EmailTemplate({
             <Heading style={styles.title}>Budget Alert</Heading>
             <Text style={styles.text}>Hello {userName},</Text>
             <Text style={styles.text}>
-              You’ve used {data?.percentageUsed?.toFixed(1)}% of your monthly
+              You’ve used{" "}
+              {Number(safeData.percentageUsed).toFixed(1)}% of your monthly
               budget.
             </Text>
+
             <Section style={styles.statsContainer}>
               <div style={styles.stat}>
                 <Text style={styles.text}>Budget Amount</Text>
-                <Text style={styles.heading}>${data?.budgetAmount}</Text>
+                <Text style={styles.heading}>${safeData.budgetAmount}</Text>
               </div>
               <div style={styles.stat}>
                 <Text style={styles.text}>Spent So Far</Text>
-                <Text style={styles.heading}>${data?.totalExpenses}</Text>
+                <Text style={styles.heading}>${safeData.totalExpenses}</Text>
               </div>
               <div style={styles.stat}>
                 <Text style={styles.text}>Remaining</Text>
-                <Text style={styles.heading}>
-                  ${data?.budgetAmount - data?.totalExpenses}
-                </Text>
+                <Text style={styles.heading}>${remaining}</Text>
               </div>
             </Section>
+
+            <Text style={styles.footer}>
+              Stay alert! You’re close to reaching your budget limit. Review
+              your expenses to keep your finances on track.
+            </Text>
           </Container>
         </Body>
       </Html>
     );
   }
 
+  // If type doesn’t match anything
   return null;
 }
 

@@ -251,6 +251,15 @@ export function AddTransactionForm({
           <p className="text-sm text-red-500">{errors.date.message}</p>
         )}
       </div>
+      {/* Description */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Description</label>
+        <Input placeholder="Enter description" {...register("description")} />
+        {errors.description && (
+          <p className="text-sm text-red-500">{errors.description.message}</p>
+        )}
+      </div>
+
 
       {/* Recurring */}
       <div className="flex items-center justify-between p-4 border rounded-lg">
