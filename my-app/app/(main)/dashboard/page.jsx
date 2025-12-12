@@ -1,12 +1,13 @@
-import { getUserAccounts ,getDashboardData} from '@/actions/dashboard'
+import { getUserAccounts ,getDashboardData } from '@/actions/dashboard'
 import { CreateAccountDrawer } from '@/components/create-account-drawer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Plus } from 'lucide-react'
 import React, { Suspense } from 'react'
 import { AccountCard } from './_components/account-card'
 import { getCurrentBudget } from '@/actions/budget'
-import {BudgetProgress}  from './_components/budget-progress'
+import { BudgetProgress } from './_components/budget-progress'
 import DashboardOverview from './_components/transaction-overview'
+import { AiInsightsCard } from './_components/AiInsightsCard'   // <- add import
 
 async function DashboardPage() {
   const accounts = await getUserAccounts()
@@ -16,10 +17,12 @@ async function DashboardPage() {
   if (defaultAccount) {
     budgetInfo = await getCurrentBudget(defaultAccount.id)
   }
-  const transaction= await getDashboardData();
+
+  const transaction = await getDashboardData();
 
   return (
     <div className="space-y-8">
+
       {/* Budget progress */}
       {defaultAccount && (
         <BudgetProgress
@@ -27,15 +30,17 @@ async function DashboardPage() {
           currentExpenses={budgetInfo?.currentExpense || 0}
         />
       )}
+
+      {/* ⭐ AI Insights Card — follows same design as other cards */}
+      <AiInsightsCard />
+
       {/* Overview */}
-      <Suspense fallback={"Loading Overview..."}> 
+      <Suspense fallback={"Loading Overview..."}>
         <DashboardOverview
-        accounts={accounts}
-        transactions={transaction ||[]}
+          accounts={accounts}
+          transactions={transaction || []}
         />
-
       </Suspense>
-
 
       {/* Accounts Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
@@ -48,10 +53,15 @@ async function DashboardPage() {
           </Card>
         </CreateAccountDrawer>
 
-        {accounts.length > 0
-          ? accounts.map((account) => <AccountCard key={account.id} account={account} />)
-          : <p className="col-span-full text-center text-muted-foreground">No accounts yet.</p>
-        }
+        {accounts.length > 0 ? (
+          accounts.map((account) => (
+            <AccountCard key={account.id} account={account} />
+          ))
+        ) : (
+          <p className="col-span-full text-center text-muted-foreground">
+            No accounts yet.
+          </p>
+        )}
       </div>
     </div>
   )
